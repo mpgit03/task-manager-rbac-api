@@ -80,4 +80,12 @@ export const loginUser = asyncHandler(
 
         
     }
-)
+);
+
+export const getMe = asyncHandler(
+    async(req,res,next)=>{
+        res.status(200).json({
+            user:req.user,
+        });
+    }
+);
