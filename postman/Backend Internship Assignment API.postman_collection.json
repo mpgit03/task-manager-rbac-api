@@ -1,0 +1,390 @@
+{
+  "info": {
+    "_postman_id": "c43bc1c6-651e-4bd0-8555-44f4a9c903d2",
+    "name": "Backend Internship Assignment API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47168844"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Test User\",\r\n  \"email\": \"test@gmail.com\",\r\n  \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/auth/register",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registers a new user account.\n\nSteps to test:\n\n1. Enter user details\n    \n2. Use a unique email\n    \n3. Send request\n    \n4. User will be registered successfully"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response =\r",
+                  "pm.response.json();\r",
+                  "\r",
+                  "if(\r",
+                  "    pm.response.code === 200 &&\r",
+                  "    response.token\r",
+                  "){\r",
+                  "    pm.environment.set(\r",
+                  "        \"token\",\r",
+                  "        response.token\r",
+                  "    );\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@test.com\",\r\n  \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/auth/login",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates a user and returns a JWT token.\n\nSteps to test:\n\n1. Register a new user (optional)\n    \n2. Enter valid credentials\n    \n3. Send request\n    \n4. Copy JWT token for protected routes"
+          },
+          "response": []
+        },
+        {
+          "name": "getMe",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BaseUrl}}/auth/me",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Returns the currently authenticated user.\n\nRequires a valid JWT token.\n\nSteps to test:\n\n1. Login\n    \n2. Copy JWT token\n    \n3. Add token in Authorization header\n    \n4. Send request\n    \n5. Authenticated user details will be returned"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "CreateTask",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Task creation \",\r\n  \"description\": \"testing\",\r\n  \"status\": \"pending\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/tasks",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            },
+            "description": "Creates a new task for the authenticated user.\n\nRequires:\n\n- Valid JWT token\n    \n\n1. Login\n    \n2. Add JWT token in Authorization\n    \n3. Enter task details\n    \n4. Send request\n    \n5. Task will be created successfully\n    \n\nExample Body:\n\n{  \n\"title\": \"Learn React\",  \n\"description\": \"Practice hooks\",  \n\"status\": \"pending\"  \n}"
+          },
+          "response": []
+        },
+        {
+          "name": "GetTasks",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BaseUrl}}/tasks",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            },
+            "description": "Fetches all tasks created by the authenticated user.\n\nRequires:\n\n- Valid JWT token\n    \n\n1. Login\n    \n2. Add JWT token in Authorization\n    \n3. Send request\n    \n4. View all created tasks"
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateTask",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"update tasks\",\r\n  \"description\": \"updating\",\r\n  \"status\": \"in-progress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/tasks/6a0d549732159ceab1901cef",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "6a0d549732159ceab1901cef"
+              ]
+            },
+            "description": "Updates an existing task by ID.\n\nSteps to test:\n\n1. Login\n    \n2. Run Get Tasks\n    \n3. Copy desired task _id\n    \n4. Replace in URL with :taskId\n    \n5. Send request\n    \n\nexample body:\n\n{  \n\"title\": \"Learn React Advanced\",  \n\"description\": \"Practice hooks and Context API\",  \n\"status\": \"in-progress\"  \n}"
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteTask",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BaseUrl}}/tasks/:taskId",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                ":taskId"
+              ],
+              "variable": [
+                {
+                  "key": "taskId",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Deletes an existing task.\n\nSteps to test:\n\n1. Login\n    \n2. Run Get Tasks\n    \n3. Copy desired task _id\n    \n4. Replace :taskId in URL\n    \n5. Send request"
+          },
+          "response": []
+        },
+        {
+          "name": "getTask",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BaseUrl}}/tasks/:taskId",
+              "host": [
+                "{{BaseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                ":taskId"
+              ],
+              "variable": [
+                {
+                  "key": "taskId",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "1. Login\n    \n2. Run Get Tasks\n    \n3. Copy desired task _id\n    \n4. Replace :taskId in URL\n    \n5. Send request"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin Route",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/admin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "admin"
+              ]
+            },
+            "description": "Admin-only protected route.\n\nRequires:\n\n- Valid JWT token\n    \n- Admin role\n    \n\nSteps to test:\n\n1. Login as admin user\n    \n2. Add JWT token\n    \n3. Send request\n    \n4. Route accessible only for admin users\n    \n\nTesting RBAC:\n\nRegular User:  \nEmail: [user@test.com](https://mailto:user@test.com)  \nPassword: 123456\n\nAdmin User:  \nEmail: [admin@test.com](https://mailto:admin@test.com)  \nPassword: 123456"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}

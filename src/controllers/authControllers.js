@@ -8,8 +8,22 @@ export const registerUser  = asyncHandler(
         const {name ,email , password} = req.body;
         if(!name||!email||!password){
             res.status(400);
-            throw new Error("Credentials Missing");
+            throw new Error("Email or Password missing");
         }
+
+        
+        if(password.length < 6){
+            res.status(400);
+            throw new Error(
+                "Password must be at least 6 characters"
+            );
+            }
+        if(!email.includes("@")){
+            res.status(400);
+            throw new Error(
+                "Invalid email format"
+            );
+        }    
         const existingUser = await User.findOne({
             email,
         })
@@ -18,7 +32,7 @@ export const registerUser  = asyncHandler(
             throw new Error("User already exists");
         }
 
-        //creating user 
+        
         const user = await User.create({
             name,email,password
         });
@@ -57,14 +71,14 @@ export const loginUser = asyncHandler(
 
         if(!user){
             res.status(401);
-            throw new Error("User does not exist");
+            throw new Error("Invalid email or password");
         }
 
         const passwordMatch = await user.comparePassword(password);
 
         if(!passwordMatch){
             res.status(401);
-            throw new Error("Wrong Credentials");
+            throw new Error("Invalid email or password");
         }
 
         res.status(200).json({

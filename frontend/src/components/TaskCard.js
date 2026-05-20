@@ -5,6 +5,7 @@ export default function TaskCard({
 }) {
 
     const [loading,setLoading] = useState(false);
+    const [error,setError] = useState("");
     const [isEditing,setIsEditing] = useState(false);
     const [editedTask,setEditedTask] = useState(
         {
@@ -29,6 +30,7 @@ export default function TaskCard({
     const handleEdit = async()=>{
         try{
           setLoading(true);
+          setError("");
           const token = localStorage.getItem("token");
 
           const response = await fetch(
@@ -52,7 +54,9 @@ export default function TaskCard({
           setIsEditing(false);
       
         }catch(error){
-          alert(error.message);
+          setError(
+              error.message
+          );
         }finally{
           setLoading(false);
         }
@@ -71,6 +75,13 @@ export default function TaskCard({
         <h2 className="text-2xl font-semibold">
           Edit Task
         </h2>
+
+        {error && (
+          <p className=
+          "text-red-500 text-sm">
+              {error}
+          </p>
+      )}
 
         {/* Title */}
         <input

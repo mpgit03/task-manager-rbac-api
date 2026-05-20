@@ -10,6 +10,7 @@ export default function TaskForm({onTaskCreated}) {
         status:"pending",
     });
     const [loading,setLoading] = useState(false);
+    const [error,setError] = useState("");
 
 
     const handleChange = (e)=>{
@@ -22,6 +23,7 @@ export default function TaskForm({onTaskCreated}) {
     const handleSubmit = async(e)=>{
         e.preventDefault();
         setLoading(true);
+        setError("");
 
         try{
             const token = localStorage.getItem("token");
@@ -61,7 +63,9 @@ export default function TaskForm({onTaskCreated}) {
             });
 
         }catch(error){
-            alert(error.message);
+            setError(
+                error.message
+            );
         }finally{
             setLoading(false);  
         }
@@ -79,6 +83,13 @@ export default function TaskForm({onTaskCreated}) {
             <h2 className="text-2xl font-semibold">
                 Create Task
             </h2>
+
+            {error && (
+                <p className=
+                "text-red-500 text-sm">
+                    {error}
+                </p>
+            )}
 
             <input
                 type="text"

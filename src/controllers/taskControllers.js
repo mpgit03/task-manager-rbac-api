@@ -1,5 +1,4 @@
 
-import { errorHandler } from "../middleware/errorMiddleware.js";
 import Task from "../models/Task.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -10,8 +9,22 @@ export const createTask = asyncHandler(
 
         if(!title){
             res.status(400);
-            throw new Error("Title Missing");
+            throw new Error("Task title is required");
         }
+        const validStatuses = [
+            "pending",
+            "in-progress",
+            "completed"
+                ];
+
+        if( status && !validStatuses.includes(status)){
+            res.status(400);
+
+            throw new Error(
+                "Invalid task status"
+            );
+        }
+
 
         const task = await Task.create({
             title,
@@ -56,9 +69,25 @@ export const getTask = asyncHandler(
 export const updateTask = asyncHandler(
     async(req,res)=>{
         const {title,description,status} = req.body;
+
         if(!title && !description && !status){
             res.status(400);
             throw new Error("Nothing to update");
+        }
+
+        const validStatuses = [
+            "pending",
+            "in-progress",
+            "completed"
+        ];
+
+        if( status && !validStatuses.includes(status))
+        {
+            res.status(400);
+
+            throw new Error(
+                "Invalid task status"
+            );
         }
 
         const task = req.task ;

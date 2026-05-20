@@ -21,6 +21,8 @@ export default function Login(){
         password:"", 
     });
     const [loading ,setLoading] = useState(false);
+    const [error,setError] = useState("");
+    
 
     
     // event functions
@@ -33,6 +35,8 @@ export default function Login(){
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
+        setError("");
+        
 
         try{
             setLoading(true);
@@ -63,12 +67,15 @@ export default function Login(){
             // alert(
             //     "Login Successful"
             // );
+            
             router.push("/dashboard");
                 
 
         }
         catch (error) {
-            alert(error.message);
+            setError(
+                error.message
+            );
         } finally {
             setLoading(false);
         }
@@ -87,6 +94,13 @@ export default function Login(){
                 <form 
                     onSubmit={handleSubmit}
                     className="space-y-4">
+
+                        {error && (
+                            <p className=
+                            "text-red-500 text-sm text-center">
+                                {error}
+                            </p>
+                        )}
 
                     <input 
                     type = "email"

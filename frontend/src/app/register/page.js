@@ -21,6 +21,7 @@ export default function Register(){
         password:"", 
     });
     const [loading ,setLoading] = useState(false);
+    const [error,setError] = useState("");
 
     const handleChange = (e)=>{
         setFormData({
@@ -34,6 +35,7 @@ export default function Register(){
 
         try{
             setLoading(true);
+            setError("");
 
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
@@ -64,7 +66,9 @@ export default function Register(){
 
         }
         catch (error) {
-            alert(error.message);
+            setError(
+                error.message
+            );
         } finally {
             setLoading(false);
         }
@@ -83,6 +87,13 @@ export default function Register(){
                 <form 
                     onSubmit={handleSubmit}
                     className="space-y-4">
+                        
+                        {error && (
+                        <p className=
+                        "text-red-500 text-sm text-center">
+                            {error}
+                        </p>
+                    )}
 
                     <input 
                     type = "text"
