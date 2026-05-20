@@ -1,7 +1,6 @@
 'use client';
-
-import DashboardHeader
-from "@/components/DashboardHeader";
+import { useRouter } from "next/navigation";
+import DashboardHeader from "@/components/DashboardHeader";
 import TaskCard from "@/components/TaskCard";
 import TaskForm from "@/components/Taskform";
 import { useEffect, useState } from "react";
@@ -12,6 +11,8 @@ export default function Dashboard() {
   const [tasks,
         setTasks] =
         useState([]);
+
+  const router = useRouter();
 
   useEffect(() => {
 
@@ -25,6 +26,11 @@ export default function Dashboard() {
           localStorage.getItem(
             "token"
           );
+
+        if (!token) {
+          router.push("/login");
+          return ;
+        }
 
         const response =
           await fetch(
@@ -40,9 +46,12 @@ export default function Dashboard() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            data.message
-          );
+          if(response.status === 401){
+            localStorage.removeItem("token");
+            router.push("/login");
+            return;
+          }
+          throw new Error( data.message );
         }
 
         setTasks(data.tasks);
@@ -56,7 +65,7 @@ export default function Dashboard() {
 
   fetchTasks();
 
-}, []);
+}, [router]);
 
 const handleDelete = async(taskId)=>{
       try{
@@ -75,7 +84,6 @@ const handleDelete = async(taskId)=>{
       );
 
       const data = await response.json();
-
       if(!response.ok){
         throw new Error(data.message);
       }
@@ -88,7 +96,6 @@ const handleDelete = async(taskId)=>{
               )
             );
 
-      alert(data.message);
         
         }
       catch(error){
@@ -96,11 +103,21 @@ const handleDelete = async(taskId)=>{
       }
       finally{
         setLoading(false);
-      }
-      
-      
-      
-}
+      }     
+};
+
+const handleTaskUpdate =
+(updatedTask) => {
+
+  setTasks(prev =>
+    prev.map(task =>
+      task._id ===
+      updatedTask._id
+        ? updatedTask
+        : task
+    )
+  );
+};
 
 
     return (
@@ -130,12 +147,13 @@ const handleDelete = async(taskId)=>{
               No tasks created yet
             </p>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
               {tasks.map((task) => (
                 <TaskCard
                   key={task._id}
                   task={task}
                   onDelete = {handleDelete}
+                  onUpdate={handleTaskUpdate}
                 />
               ))}
             </div>

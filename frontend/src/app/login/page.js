@@ -1,18 +1,29 @@
 'use client'
-import { useState } from "react" 
-import { useRouter }
-from "next/navigation";
+import { useState , useEffect } from "react" 
+import { useRouter } from "next/navigation";
    
 
 
 export default function Login(){
     const router = useRouter();
+
+    useEffect(()=>{
+        const token =localStorage.getItem("token");
+        if(token){
+            router.push("/dashboard");
+        }
+    },[router]);
+
+
+    //states
     const [formData , setFormData] = useState({
         email:"",
         password:"", 
     });
     const [loading ,setLoading] = useState(false);
 
+    
+    // event functions
     const handleChange = (e)=>{
         setFormData({
             ...formData,
@@ -49,9 +60,9 @@ export default function Login(){
 
             localStorage.setItem("token" , data.token);
 
-            alert(
-                "Login Successful"
-            );
+            // alert(
+            //     "Login Successful"
+            // );
             router.push("/dashboard");
                 
 
@@ -95,10 +106,21 @@ export default function Login(){
                 />
                 <button 
                     type="submit"
+                    disabled={loading}
                     className="w-full bg-black text-white rounded-lg p-3"> 
                     {  loading ? "Logging in ..." : "Login" }
                 </button>
                 </form>
+                <p className=" text-center text-gray-600 mt-4 ">
+                Don't have an account?{" "}
+                <span onClick={() =>
+                    router.push( "/register" )
+                    }
+                    className=" text-blue-600 font-medium cursor-pointer  hover:underline "
+                >
+                    Register
+                </span>
+                </p>
 
             </div>
 

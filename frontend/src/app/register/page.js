@@ -1,12 +1,20 @@
 'use client'
-import { useState } from "react" 
-import { useRouter }
-from "next/navigation";
+import { useEffect, useState } from "react" 
+import { useRouter } from "next/navigation";
    
 
 
 export default function Register(){
     const router = useRouter();
+
+    useEffect(()=>{
+        const token = localStorage.getItem("token");
+        if(token){
+            router.push("/dashboard");
+        }
+    } , [router]);
+
+    
     const [formData , setFormData] = useState({
         name:"",
         email:"",
@@ -32,7 +40,7 @@ export default function Register(){
                 {
                     method:"POST",
                     headers:{
-                        "Content-type":"application/json",
+                        "Content-Type":"application/json",
                     },
 
                     body:JSON.stringify(formData),
@@ -50,9 +58,7 @@ export default function Register(){
 
             localStorage.setItem("token" , data.token);
 
-            alert(
-                "Registration Successful"
-            );
+            
             router.push("/dashboard");
                 
 
@@ -109,6 +115,21 @@ export default function Register(){
                     {  loading ? "Registering..." : "Register" }
                 </button>
                 </form>
+
+            <p className=" text-center text-gray-600 mt-4 ">
+            Already have an account?{" "}
+
+            <span
+                onClick={() =>
+                router.push(
+                    "/login"
+                )
+                }
+                className=" text-blue-600 font-medium cursor-pointer hover:underline "
+            >
+                Login
+            </span>
+            </p>
 
             </div>
 
